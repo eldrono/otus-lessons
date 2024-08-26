@@ -1,0 +1,30 @@
+plugins {
+    id 'groovy'
+}
+
+group = 'org.example'
+version = '1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:33.2.1-jre'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.19'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+task FatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': "org.example.MainClass"
+    }
+    archiveBaseName = 'hw01-gradle-FatJar'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.compileClasspath.filter{ it.exists() }.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+test {
+    useJUnitPlatform()
+}
